@@ -75,3 +75,40 @@ plt.legend(("Capomulin","Ceftamin","Infubinol","Ketapril","Naftisol","Placebo","
 #plt.savefig("../Images/tumnor_response_to_treatment.png")
 
 plt.show()
+
+# Store the Mean Met. Site Data Grouped by Drug and Timepoint
+metastic_response_mean = pd.pivot_table(combined_df, index = ["Timepoint"],
+                               columns =["Drug"], values = "Metastatic Sites",
+                               aggfunc = np.mean)
+
+# Preview DataFrame
+metastic_response_mean
+
+# Store the SEM Met. Site Data Grouped by Drug and Timepoint
+metastic_response_sem = pd.pivot_table(combined_df, index = ['Timepoint'],
+                               columns =['Drug'], values = 'Metastatic Sites',
+                               aggfunc = stats.sem)
+metastic_response_sem
+
+# Generate the Plot (with Error Bars)
+metastic_x_axis = [metastic_response_mean[num].index.tolist() for num in metastic_response_mean.columns]
+metastic_y_axis = [metastic_response_mean[num].tolist() for num in metastic_response_mean.columns]
+metastic_s_error = [metastic_response_sem[num].tolist() for num in metastic_response_sem.columns]
+
+plt.figure(figsize=(15,10))
+markers = ["o", "v", "s","d",".","^","<",">","8"]
+for num in range(len(s_error)):
+    plt.errorbar(metastic_x_axis[num], metastic_y_axis[num], yerr = metastic_s_error[num],
+                 marker = random.choice(markers),
+                 linestyle = "--",
+                 markersize='6', linewidth = 1)
+plt.grid(True)
+plt.xlabel("Treatment Duration (Days)", fontsize = 12)
+plt.ylabel("Met. Sites", fontsize = 12)
+plt.title("Metastic Spread During Treatment", fontsize = 14)
+plt.legend(("Capomulin","Ceftamin","Infubinol","Ketapril","Naftisol","Placebo","Propriva","Ramicane	Stelasyn","Zoniferol"),loc="upper left")
+
+# Save the Figure
+#plt.savefig("../Images/metastic_spread_during_treatment.png")
+
+plt.show()
