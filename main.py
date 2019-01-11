@@ -51,3 +51,27 @@ sem_tumor_vol_df = pd.pivot_table(combined_df, index = ["Timepoint"],
                                columns =['Drug'], values = "Tumor Volume (mm3)",
                                aggfunc = stats.sem)
 sem_tumor_vol_df
+
+# Generate the Plot (with Error Bars)
+x_axis = [mean_tumor_vol_df[num].index.tolist() for num in mean_tumor_vol_df.columns]
+y_axis = [mean_tumor_vol_df[num].tolist() for num in mean_tumor_vol_df.columns]
+s_error = [sem_tumor_vol_df[num].tolist() for num in sem_tumor_vol_df.columns]
+
+
+plt.figure(figsize=(15,10))
+markers = ["o", "v", "s","d"]
+for num in range(len(s_error)):
+    plt.errorbar(x_axis[num], y_axis[num], yerr = s_error[num],
+                 marker = random.choice(markers),
+                 linestyle = "--",
+                 markersize='6', linewidth = 1)
+plt.grid(True)
+plt.xlabel("Time (Days)", fontsize = 12)
+plt.ylabel("Tumor Volume (mm3)", fontsize = 12)
+plt.title("Tumor Response to Treatment", fontsize = 14)
+plt.legend(("Capomulin","Ceftamin","Infubinol","Ketapril","Naftisol","Placebo","Propriva","Ramicane	Stelasyn","Zoniferol"),loc="upper left")
+
+# Save the Figure
+#plt.savefig("../Images/tumnor_response_to_treatment.png")
+
+plt.show()
